@@ -3,6 +3,8 @@
 
 #include <expat.h>
 
+#include <cstring>
+
 
 /* Start with a simple XML reader
 
@@ -32,6 +34,18 @@ XML_Status parseFile(XML_Parser& parser,
 	return XML_Parse(parser, buffer, 0, true);
 }
 
+
+void OSMStartElement(void * userdata,
+		const XML_Char *name,
+		const XML_Char **atts)
+{
+	if (strcmp(name, "node") == 0)
+	{
+		cout << name << endl;
+	}
+	
+}
+
 int main(int argc, char** argv)
 {
 	if(argc != 2)
@@ -51,6 +65,7 @@ int main(int argc, char** argv)
 	}
 
 	XML_Parser parser =  XML_ParserCreate(NULL);
+	XML_SetStartElementHandler(parser, OSMStartElement);
 	XML_Status parseResult = parseFile(parser, xmlIn);
 	cout << "Did parse correctly? ";
 	cout << std::boolalpha << (parseResult == XML_STATUS_OK);
