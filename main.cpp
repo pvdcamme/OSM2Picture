@@ -17,8 +17,9 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 
-
-XML_Status parseFile(XML_Parser& parser, 
+/* Parses a full stream
+ */
+XML_Status parseStream(XML_Parser& parser, 
 		std::istream& input)
 {
 	const size_t BUFFERSIZE = 2048;
@@ -34,7 +35,9 @@ XML_Status parseFile(XML_Parser& parser,
 	return XML_Parse(parser, buffer, 0, true);
 }
 
-
+/*
+	prints out the nodes
+*/
 void OSMStartElement(void * userdata,
 		const XML_Char *name,
 		const XML_Char **atts)
@@ -53,7 +56,6 @@ void OSMStartElement(void * userdata,
 		if(value == NULL)
 			break;
 		atts++;
-//		cout << key << " :: " << value << endl;	
 		if(strcmp(key, "id") == 0)
 			ID = strtoll(value, NULL, 10);
 		else if(strcmp(key, "lat") == 0)
@@ -98,7 +100,7 @@ int main(int argc, char** argv)
 
 	XML_Parser parser =  XML_ParserCreate(NULL);
 	XML_SetStartElementHandler(parser, OSMStartElement);
-	XML_Status parseResult = parseFile(parser, *input);
+	XML_Status parseResult = parseStream(parser, *input);
 	cout << "Did parse correctly? ";
 	cout << std::boolalpha << (parseResult == XML_STATUS_OK);
 	cout << endl;
