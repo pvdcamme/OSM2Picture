@@ -1,6 +1,7 @@
 #ifndef IMAGE_MAP
 #define IMAGE_MAP
 
+#include <cstddef> //for size_t
 /*
  The ImageMap class maps a predefined linear scaling
  to an image (field).
@@ -14,12 +15,13 @@
 */
 class ImageMap
 {
-	
+	size_t mWidth, mHeight;
 public:
-	ImageMap(size_t width, size_t height)
+	ImageMap(size_t width, size_t height);
+	~ImageMap();
 
 	void setScale(double x, double y);
-	void setOffset(double x, double y)
+	void setOffset(double x, double y);
 
 
 	void drawPoint(double x, double y,

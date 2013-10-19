@@ -1,5 +1,5 @@
 EXEC=OSM2Picture
-OBJ=main.o
+OBJ=main.o ImageMap.o
 LIB= -lexpat
 CPPFLAGS= -Wall
 
