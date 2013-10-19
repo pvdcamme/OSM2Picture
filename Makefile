@@ -5,6 +5,6 @@ CPPFLAGS= -Wall
 
 
 build: ${OBJ}
-	g++ ${LIB} ${CPPFLAGS} ${OBJ} -o ${EXEC}
+	g++ ${CPPFLAGS} ${OBJ} ${LIB} -o ${EXEC}
 .cpp.o:
 	g++ -c ${CPPFLAGS} $<

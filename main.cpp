@@ -30,6 +30,10 @@ int main(int argc, char** argv)
 		cerr << "Select bad file" << endl;
 		return -2;
 	}
+
+	XML_Parser xmlEvt =  XML_ParserCreate(NULL);
+	XML_ParserFree(xmlEvt);
+
 		
 	return true;
 }
