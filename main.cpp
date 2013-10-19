@@ -42,21 +42,31 @@ void OSMStartElement(void * userdata,
 	if (strcmp(name, "node") != 0)
 		return;
 
-	unsigned long int ID;
-	double lattitude;
-	double longitude;
-	const XML_Char** END_REF = {NULL};
+	long long int ID = -1;
+	double lattitude = -1;
+	double longitude = -1;
 	while(*atts != NULL)	
 	{
 		const XML_Char* key = *atts;
-		const XML_Char* value = *(atts + 1);
-		atts += 2;
-		if(key && value)
-			cout << key << " :: " << value << " -- ";
-		else
-			atts = END_REF; //incomplete key-val pair
+		atts++;
+		const XML_Char* value = *atts;
+		if(value == NULL)
+			break;
+		atts++;
+//		cout << key << " :: " << value << endl;	
+		if(strcmp(key, "id") == 0)
+			ID = strtoll(value, NULL, 10);
+		else if(strcmp(key, "lat") == 0)
+			lattitude = strtod(value, NULL);
+		else if(strcmp(key, "lon") == 0)
+			longitude = strtod(value, NULL);
 	}
-	cout << endl;
+	if(ID != -1) 
+	{
+		cout << ID << " @ " << lattitude;
+		cout << "N " << longitude << "E";
+		cout << endl;
+	}
 }
 
 int main(int argc, char** argv)
