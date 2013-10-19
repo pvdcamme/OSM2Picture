@@ -19,7 +19,7 @@ using std::ifstream;
 
 
 XML_Status parseFile(XML_Parser& parser, 
-		ifstream& input)
+		std::istream& input)
 {
 	const size_t BUFFERSIZE = 2048;
 	char buffer[BUFFERSIZE];
@@ -71,7 +71,17 @@ void OSMStartElement(void * userdata,
 
 int main(int argc, char** argv)
 {
-	if(argc != 2)
+	std::istream* input;
+	ifstream xmlIn;
+
+	if(argc == 1) //read from stdin;
+	{
+		input = &std::cin;
+	}else if(argc == 2) //file argument
+	{
+		xmlIn.open(argv[1]);
+		input = &xmlIn;
+	}else
 	{
 		cerr << "Wrong usage" << endl;
 		cerr << "expected: ";
@@ -80,16 +90,15 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	ifstream xmlIn(argv[1]);
 	if(!xmlIn.good())
 	{
-		cerr << "Select bad file" << endl;
+		cerr << "Error: Selected bad file" << endl;
 		return -2;
 	}
 
 	XML_Parser parser =  XML_ParserCreate(NULL);
 	XML_SetStartElementHandler(parser, OSMStartElement);
-	XML_Status parseResult = parseFile(parser, xmlIn);
+	XML_Status parseResult = parseFile(parser, *input);
 	cout << "Did parse correctly? ";
 	cout << std::boolalpha << (parseResult == XML_STATUS_OK);
 	cout << endl;
