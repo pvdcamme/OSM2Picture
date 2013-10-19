@@ -39,11 +39,24 @@ void OSMStartElement(void * userdata,
 		const XML_Char *name,
 		const XML_Char **atts)
 {
-	if (strcmp(name, "node") == 0)
+	if (strcmp(name, "node") != 0)
+		return;
+
+	unsigned long int ID;
+	double lattitude;
+	double longitude;
+	const XML_Char** END_REF = {NULL};
+	while(*atts != NULL)	
 	{
-		cout << name << endl;
+		const XML_Char* key = *atts;
+		const XML_Char* value = *(atts + 1);
+		atts += 2;
+		if(key && value)
+			cout << key << " :: " << value << " -- ";
+		else
+			atts = END_REF; //incomplete key-val pair
 	}
-	
+	cout << endl;
 }
 
 int main(int argc, char** argv)
