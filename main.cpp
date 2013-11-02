@@ -22,7 +22,7 @@ using std::ifstream;
 XML_Status parseStream(XML_Parser& parser, 
 		std::istream& input)
 {
-	const size_t BUFFERSIZE = 2048;
+	const size_t BUFFERSIZE = 32*1024;
 	char buffer[BUFFERSIZE];
 	size_t readAmt = 1; //init value for loop
 

@@ -15,19 +15,39 @@
 */
 class ImageMap
 {
+public:
+	struct Color{
+		unsigned char r;
+		unsigned char g;
+		unsigned char b;
+	};
+private:
 	size_t mWidth, mHeight;
+	struct Color* mPixels;
+	
+	double mXOffset, mYOffset;
+	double mXScale, mYScale;
+
 public:
 	ImageMap(size_t width, size_t height);
 	~ImageMap();
 
-	void setScale(double x, double y);
-	void setOffset(double x, double y);
+	ImageMap(const ImageMap&); //no copy allowed
+
+
+	/* The drawing area (before transform to a bitmap)
+	is defined by 2 2D point
+	*/
+	void setArea(double xTopLeft, double yTopLeft,
+			double xBotRight, double yBotRight);
 
 
 	void drawPoint(double x, double y,
 			unsigned char r,
 			unsigned char g,
 			unsigned char b);
+	void drawPoint(double x, double y,
+		struct Color c);
 	
 	bool saveImage(char* name);
 };
