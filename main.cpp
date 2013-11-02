@@ -5,6 +5,8 @@
 
 #include <cstring>
 
+#include "OSMData.h"
+
 
 /* Start with a simple XML reader
 
@@ -16,60 +18,6 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::ifstream;
-
-/* Parses a full stream
- */
-XML_Status parseStream(XML_Parser& parser, 
-		std::istream& input)
-{
-	const size_t BUFFERSIZE = 32*1024;
-	char buffer[BUFFERSIZE];
-	size_t readAmt = 1; //init value for loop
-
-	while(input.good() && readAmt > 0)
-	{
-		input.read(buffer, BUFFERSIZE);
-		readAmt = input.gcount();
-		XML_Parse(parser, buffer, readAmt, false);
-	}
-	return XML_Parse(parser, buffer, 0, true);
-}
-
-/*
-	prints out the nodes
-*/
-void OSMStartElement(void * userdata,
-		const XML_Char *name,
-		const XML_Char **atts)
-{
-	if (strcmp(name, "node") != 0)
-		return;
-
-	long long int ID = -1;
-	double lattitude = -1;
-	double longitude = -1;
-	while(*atts != NULL)	
-	{
-		const XML_Char* key = *atts;
-		atts++;
-		const XML_Char* value = *atts;
-		if(value == NULL)
-			break;
-		atts++;
-		if(strcmp(key, "id") == 0)
-			ID = strtoll(value, NULL, 10);
-		else if(strcmp(key, "lat") == 0)
-			lattitude = strtod(value, NULL);
-		else if(strcmp(key, "lon") == 0)
-			longitude = strtod(value, NULL);
-	}
-	if(ID != -1) 
-	{
-		cout << ID << " @ " << lattitude;
-		cout << "N " << longitude << "E";
-		cout << endl;
-	}
-}
 
 int main(int argc, char** argv)
 {
@@ -97,16 +45,20 @@ int main(int argc, char** argv)
 		cerr << "Error: Selected bad file" << endl;
 		return -2;
 	}
+	OSMData data;
+	data.addXMLStream(*input);
 
-	XML_Parser parser =  XML_ParserCreate(NULL);
-	XML_SetStartElementHandler(parser, OSMStartElement);
-	XML_Status parseResult = parseStream(parser, *input);
-	cout << "Did parse correctly? ";
-	cout << std::boolalpha << (parseResult == XML_STATUS_OK);
+	cout << "read " << data.nodeCount() << " nodes";
 	cout << endl;
+	size_t ncount = data.nodeCount();
+	for(size_t ctr(0); ctr < ncount; ctr++)
+	{
+		struct OSMData::Node& n = data.getNode(ctr);
+		cout << n.lattitude << " N ";
+		cout << n.longitude << " E ";
+		cout << endl;
+	}
 
-	XML_ParserFree(parser);
-
-		
+			
 	return true;
 }

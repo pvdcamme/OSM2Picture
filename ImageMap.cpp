@@ -12,7 +12,7 @@ ImageMap::~ImageMap()
 }
 
 void ImageMap::setArea(double xTopLeft, double yTopLeft,
-		double xBotRight, yBotRight)
+		double xBotRight,double yBotRight)
 {
 	//dS = width / (max - min)
 	//target = dS * (src - min)
