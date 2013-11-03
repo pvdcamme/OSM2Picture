@@ -4,8 +4,10 @@
 #include <expat.h>
 
 #include <cstring>
+#include <algorithm>
 
 #include "OSMData.h"
+#include "ImageMap.h"
 
 
 /* Start with a simple XML reader
@@ -51,14 +53,28 @@ int main(int argc, char** argv)
 	cout << "read " << data.nodeCount() << " nodes";
 	cout << endl;
 	size_t ncount = data.nodeCount();
+	double minLat(180), maxLat(-180);
+	double minLon(360), maxLon(-1);
 	for(size_t ctr(0); ctr < ncount; ctr++)
 	{
 		struct OSMData::Node& n = data.getNode(ctr);
-		cout << n.lattitude << " N ";
-		cout << n.longitude << " E ";
-		cout << endl;
+		minLat = std::min(n.lattitude, minLat);
+		maxLat = std::max(n.lattitude, maxLat);
+		minLon = std::min(n.longitude, minLon);
+		maxLon = std::max(n.longitude, maxLon);
+	}
+	
+	ImageMap img(1024,1024);
+//	img.setArea(minLon, maxLat, maxLon, minLat);
+	img.setArea(2.208, 51.649, 6.652, 49.293);
+	for(size_t ctr(0); ctr < ncount; ctr++)
+	{
+		struct OSMData::Node& n = data.getNode(ctr);
+		img.drawPoint(n.longitude, n.lattitude,
+				0, 0, 255);
 	}
 
-			
+	img.saveImage("test.ppm");
+
 	return true;
 }

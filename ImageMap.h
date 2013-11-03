@@ -37,6 +37,13 @@ public:
 
 	/* The drawing area (before transform to a bitmap)
 	is defined by 2 2D point
+	^
+	|
+	| 1   
+	|
+	|   
+	|        2
+	-------------->
 	*/
 	void setArea(double xTopLeft, double yTopLeft,
 			double xBotRight, double yBotRight);
@@ -49,7 +56,10 @@ public:
 	void drawPoint(double x, double y,
 		struct Color c);
 	
-	bool saveImage(char* name);
+	/* 
+		Saves to PPM image
+	*/
+	bool saveImage(const char* name);
 };
 #endif
 
