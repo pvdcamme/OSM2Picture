@@ -76,7 +76,8 @@ void ImageMap::drawPoint(double x, double y,
 	mPixels[offset] = c;
 }
 
-
+/* Saves to a PPM image
+*/
 bool ImageMap::saveImage(const char* name)
 {
 	ofstream output(name);
