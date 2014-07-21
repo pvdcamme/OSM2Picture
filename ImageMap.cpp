@@ -101,3 +101,74 @@ bool ImageMap::saveImage(const char* name)
 	return output.good();
 }
 
+ImageMap::iterator ImageMap::begin()
+{
+	return ImageMap::iterator(*this);
+}
+
+ImageMap::iterator ImageMap::end()
+{
+	return ImageMap::iterator(*this);
+}
+
+ImageMap::iterator::iterator(ImageMap& m, int idx):
+	mParent(m), mIdx(idx)
+{}
+
+ImageMap::iterator::iterator():
+	mParent(*(ImageMap*)NULL), mIdx(-1)
+{}
+
+ImageMap::iterator& ImageMap::iterator::operator=(const iterator& oth)
+{
+	mParent = oth.mParent;
+	mIdx = oth.mIdx;
+	return *this;
+}
+
+bool ImageMap::iterator::operator==(ImageMap::iterator oth)
+{
+	return mIdx == oth.mIdx;
+}
+
+bool ImageMap::iterator::operator!=(ImageMap::iterator oth)
+{
+	return mIdx != oth.mIdx;
+}
+ImageMap::iterator& ImageMap::iterator::operator++()
+{
+	mIdx++;
+	return *this;
+}
+
+ImageMap::iterator ImageMap::iterator::operator++(int)
+{
+	iterator oth(mParent, mIdx);
+	mIdx++;
+	return oth;
+}
+
+double ImageMap::iterator::west()
+{
+	double x = (mIdx % mParent.mWidth) + 1;
+	return mParent.mXOffset + x * mParent.mXScale;
+}
+
+double ImageMap::iterator::east()
+{
+	double x = mIdx % mParent.mWidth;
+	return mParent.mXOffset + x * mParent.mXScale;
+}
+
+double ImageMap::iterator::north()
+{
+	double y = mIdx / mParent.mWidth;
+	return mParent.mYOffset + y * mParent.mYScale;
+}
+
+double ImageMap::iterator::south()
+{
+	double y = (mIdx / mParent.mWidth) + 1;
+	return mParent.mYOffset + y * mParent.mYScale;
+}
+

@@ -13,6 +13,9 @@
 	3) draw a lot of points.
 	4) save the resulting image to a file.
 */
+
+class ImageMap;
+
 class ImageMap
 {
 public:
@@ -29,6 +32,27 @@ private:
 	double mXScale, mYScale;
 
 public:
+	class iterator
+	{
+		ImageMap& mParent;
+		int mIdx;
+	public:
+
+		iterator(ImageMap& m, int idx = 0);
+		iterator();
+
+		iterator& operator=(const iterator& oth);
+		bool operator==(iterator oth);
+		bool operator!=(iterator oth);
+		iterator& operator++();
+		iterator operator++(int);
+
+		double west();
+		double east();
+		double north();
+		double south();
+	};
+
 	ImageMap(size_t width, size_t height);
 	~ImageMap();
 
@@ -60,6 +84,9 @@ public:
 		Saves to PPM image
 	*/
 	bool saveImage(const char* name);
+
+	iterator begin();
+	iterator end();
 };
 #endif
 

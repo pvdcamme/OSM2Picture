@@ -67,6 +67,13 @@ int main(int argc, char** argv)
 	ImageMap img(1024,1024);
 //	img.setArea(minLon, maxLat, maxLon, minLat);
 	img.setArea(2.208, 51.649, 6.652, 49.293);
+	ImageMap::iterator it = img.begin();
+
+	while(it != img.end())
+	{
+		++it;
+	}
+	
 	for(size_t ctr(0); ctr < ncount; ctr++)
 	{
 		struct OSMData::Node& n = data.getNode(ctr);
