@@ -50,8 +50,7 @@ int main(int argc, char** argv)
 	OSMData data;
 	data.addXMLStream(*input);
 
-	cout << "read " << data.nodeCount() << " nodes";
-	cout << endl;
+	cout << "Read " << data.nodeCount() << " nodes" << endl;
 	size_t ncount = data.nodeCount();
 	double minLat(180), maxLat(-180);
 	double minLon(360), maxLon(-1);
@@ -65,7 +64,6 @@ int main(int argc, char** argv)
 	}
 	
 	ImageMap img(1024,1024);
-//	img.setArea(minLon, maxLat, maxLon, minLat);
 	img.setArea(2.208, 51.649, 6.652, 49.293);
 	ImageMap::iterator it = img.begin();
 
@@ -81,7 +79,9 @@ int main(int argc, char** argv)
 				0, 0, 255);
 	}
 
-	img.saveImage("test.ppm");
+  auto resultName = "test.ppm";
+	img.saveImage(resultName);
+  cout << "Wrote results to " << resultName << endl;
 
 	return true;
 }
