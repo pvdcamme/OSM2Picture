@@ -18,4 +18,4 @@ Openstreet map files can be found at [Planet osm](https://wiki.openstreetmap.org
 The result is written to test.ppm. Converting these files to a more common image format can be 
 done with conver (from ImageMagick).
 
-The XML are processed at about 30 MBytes/s but since these files are huge, it can still take a long time for the whole XML to be processed.
+The XML files are processed at about 30 MBytes/s but since these files are huge, it can take a long time for the whole XML to be processed.
