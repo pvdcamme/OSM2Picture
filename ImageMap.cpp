@@ -31,6 +31,10 @@ ImageMap::ImageMap(size_t width, size_t height):
 	mWidth(width), mHeight(height),
 	mPixels(new struct Color[width * height])
 {
+    for(size_t ctr(0); ctr < width * height; ++ctr) {
+    auto& pixel = mPixels[ctr];
+    pixel.r = pixel.g = pixel.b = 0;
+  }
 }
 
 ImageMap::~ImageMap()
@@ -84,7 +88,7 @@ bool ImageMap::saveImage(const char* name)
 	output << "P3" << endl;
 	output << mWidth << " ";
 	output << mHeight << " ";
-	output << 256 << endl;
+	output << 255 << endl;
 
 	for(size_t y(0); y < mHeight; y++)
 	{
@@ -95,8 +99,8 @@ bool ImageMap::saveImage(const char* name)
 			output << (unsigned int)c.r << " ";
 			output << (unsigned int)c.g << " ";
 			output << (unsigned int)c.b << " ";
+	  	output << endl;
 		}
-		output << endl;
 	}
 	return output.good();
 }
