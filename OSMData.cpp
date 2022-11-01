@@ -1,4 +1,3 @@
-#include <iostream>
 #include <osmium/io/pbf_input.hpp>
 #include <osmium/handler.hpp>
 #include <osmium/visitor.hpp>
@@ -6,13 +5,15 @@
 
 #include "OSMData.h"
 
-using std::ifstream;
 
 
 OSMData::OSMData()
 {
 }
 
+
+/** Collects all nodes for later usage.
+ */
 struct CollectHandler: public osmium::handler::Handler {
   vector<OSMData::Node> nodes;
 

@@ -1,9 +1,5 @@
 #include <iostream>
-#include <fstream>
 
-#include <expat.h>
-
-#include <cstring>
 #include <algorithm>
 
 #include "OSMData.h"
@@ -13,7 +9,8 @@
 /* Start with a simple XML reader
 
 
-  usage: ./<argv[0]> XML-file
+  usage: ./<argv[0]> PBF-file
+
 */
 
 using std::cerr;
@@ -25,7 +22,7 @@ int main(int argc, char** argv)
 {
     std::string name;
 
-    if(argc == 2) //file argument
+    if(argc == 2) //PBF-file argument
     {
         name = argv[1];
     } else
