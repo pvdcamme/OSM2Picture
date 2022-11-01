@@ -1,6 +1,7 @@
 EXEC=OSM2Picture
 OBJ=main.o ImageMap.o OSMData.o
-LIB= -lexpat
+# For LibOsmium
+LIB= -lpthread -lz 
 CPPFLAGS= -Wall -g -O3
 
 

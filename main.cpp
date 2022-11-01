@@ -23,32 +23,22 @@ using std::ifstream;
 
 int main(int argc, char** argv)
 {
-    std::istream* input;
-    ifstream xmlIn;
+    std::string name;
 
-    if(argc == 1) //read from stdin;
+    if(argc == 2) //file argument
     {
-        input = &std::cin;
-    } else if(argc == 2) //file argument
-    {
-        xmlIn.open(argv[1]);
-        input = &xmlIn;
+        name = argv[1];
     } else
     {
         cerr << "Wrong usage" << endl;
         cerr << "expected: ";
         cerr << argv[0] << " ";
-        cerr << "<xml file>" <<endl;
+        cerr << "<PBF file>" <<endl;
         return -1;
     }
 
-    if(!xmlIn.good())
-    {
-        cerr << "Error: Selected bad file" << endl;
-        return -2;
-    }
     OSMData data;
-    data.addXMLStream(*input);
+    data.addPbfStream(name);
 
     cout << "Read " << data.nodeCount() << " nodes" << endl;
     size_t ncount = data.nodeCount();

@@ -2,6 +2,8 @@
 #define OSMDATA_H
 #include <vector>
 #include <iostream>
+#include <string>
+
 
 using std::vector;
 /*
@@ -27,7 +29,7 @@ private:
 public:
 	OSMData();
 
-	bool addXMLStream(std::istream& in);
+	bool addPbfStream(std::string& fileName);
 
 	size_t nodeCount();
 	struct Node& getNode(size_t position);
