@@ -7,6 +7,8 @@ Data can be read in from either an XML file or stdin.
 Requirements:
 * libexpat-dev: for XML processing
 
+![Resulting image (Nov 2022)](result/example.jpg)
+
 Building and running:
 ```
 $ make
