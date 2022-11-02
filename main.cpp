@@ -47,13 +47,14 @@ struct ImageHandler: public osmium::handler::Handler {
   ImageMap map;
 
   ImageHandler(size_t width, size_t height): map(width, height) {
+    map.setArea(2.208, 51.649, 6.652, 49.293);
   }
 
   void node(const osmium::Node& n) {
     auto location = n.location();
     auto lat = location.lat();
     auto lon = location.lon();
-    map.addPoint(lat, lon, 1);
+    map.addPoint(lon, lat, 1);
   }
 };
 
@@ -75,8 +76,11 @@ int priv_file_to_raster(char* file_name, size_t* result, size_t size)
     osmium::apply(reader, mapper);
     for(size_t w(0); w < size; ++w) {
       for(size_t h(0); h < size; ++h) {
+
+        cout << mapper.map.getPoint(w,h) << " ";
         result[w + h * size] = mapper.map.getPoint(w,h);
       }
+      cout << endl;
     }
 
 
