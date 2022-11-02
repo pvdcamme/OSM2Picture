@@ -29,11 +29,10 @@ T clamp(T min, T max, T val)
 			
 ImageMap::ImageMap(size_t width, size_t height):
 	mWidth(width), mHeight(height),
-	mPixels(new struct Color[width * height])
+	mPixels(new size_t[width * height])
 {
     for(size_t ctr(0); ctr < width * height; ++ctr) {
-    auto& pixel = mPixels[ctr];
-    pixel.r = pixel.g = pixel.b = 0;
+      mPixels[ctr] = 0;
   }
 }
 
@@ -53,20 +52,8 @@ void ImageMap::setArea(double xTopLeft, double yTopLeft,
 	mYOffset = yBotRight;
 }
 
-void ImageMap::drawPoint(double x, double y,
-			unsigned char r,
-			unsigned char g,
-			unsigned char b)
-{
-	struct Color c;
-	c.r = r;
-	c.g = g;
-	c.b = b;
-	drawPoint(x,y, c);
-}
 
-void ImageMap::drawPoint(double x, double y,
-		struct Color c)
+void ImageMap::drawPoint(double x, double y, size_t val)
 {
 	size_t scaledX = size_t(rescale(mXScale, mXOffset, x));
 	size_t scaledY = size_t(rescale(mYScale, mYOffset, y));
@@ -77,102 +64,8 @@ void ImageMap::drawPoint(double x, double y,
 		return;
 
 	size_t offset = calculateOffset(mWidth, scaledX, scaledY);
-	mPixels[offset] = c;
+	mPixels[offset] += val;
 }
 
-/* Saves to a PPM image
-*/
-bool ImageMap::saveImage(const char* name)
-{
-	ofstream output(name);
-	output << "P3" << endl;
-	output << mWidth << " ";
-	output << mHeight << " ";
-	output << 255 << endl;
 
-	for(size_t y(0); y < mHeight; y++)
-	{
-		for(size_t x(0); x < mWidth; x++)
-		{
-			size_t offset = calculateOffset(mWidth, x, y);
-			struct Color& c = mPixels[offset];
-			output << (unsigned int)c.r << " ";
-			output << (unsigned int)c.g << " ";
-			output << (unsigned int)c.b << " ";
-	  	output << endl;
-		}
-	}
-	return output.good();
-}
-
-ImageMap::iterator ImageMap::begin()
-{
-	return ImageMap::iterator(*this);
-}
-
-ImageMap::iterator ImageMap::end()
-{
-	return ImageMap::iterator(*this);
-}
-
-ImageMap::iterator::iterator(ImageMap& m, int idx):
-	mParent(m), mIdx(idx)
-{}
-
-ImageMap::iterator::iterator():
-	mParent(*(ImageMap*)NULL), mIdx(-1)
-{}
-
-ImageMap::iterator& ImageMap::iterator::operator=(const iterator& oth)
-{
-	mParent = oth.mParent;
-	mIdx = oth.mIdx;
-	return *this;
-}
-
-bool ImageMap::iterator::operator==(ImageMap::iterator oth)
-{
-	return mIdx == oth.mIdx;
-}
-
-bool ImageMap::iterator::operator!=(ImageMap::iterator oth)
-{
-	return mIdx != oth.mIdx;
-}
-ImageMap::iterator& ImageMap::iterator::operator++()
-{
-	mIdx++;
-	return *this;
-}
-
-ImageMap::iterator ImageMap::iterator::operator++(int)
-{
-	iterator oth(mParent, mIdx);
-	mIdx++;
-	return oth;
-}
-
-double ImageMap::iterator::west()
-{
-	double x = (mIdx % mParent.mWidth) + 1;
-	return mParent.mXOffset + x * mParent.mXScale;
-}
-
-double ImageMap::iterator::east()
-{
-	double x = mIdx % mParent.mWidth;
-	return mParent.mXOffset + x * mParent.mXScale;
-}
-
-double ImageMap::iterator::north()
-{
-	double y = mIdx / mParent.mWidth;
-	return mParent.mYOffset + y * mParent.mYScale;
-}
-
-double ImageMap::iterator::south()
-{
-	double y = (mIdx / mParent.mWidth) + 1;
-	return mParent.mYOffset + y * mParent.mYScale;
-}
 

@@ -19,40 +19,14 @@ class ImageMap;
 class ImageMap
 {
 public:
-	struct Color{
-		unsigned char r;
-		unsigned char g;
-		unsigned char b;
-	};
 private:
 	size_t mWidth, mHeight;
-	struct Color* mPixels;
+	size_t* mPixels;
 	
 	double mXOffset, mYOffset;
 	double mXScale, mYScale;
 
 public:
-	class iterator
-	{
-		ImageMap& mParent;
-		int mIdx;
-	public:
-
-		iterator(ImageMap& m, int idx = 0);
-		iterator();
-
-		iterator& operator=(const iterator& oth);
-		bool operator==(iterator oth);
-		bool operator!=(iterator oth);
-		iterator& operator++();
-		iterator operator++(int);
-
-		double west();
-		double east();
-		double north();
-		double south();
-	};
-
 	ImageMap(size_t width, size_t height);
 	~ImageMap();
 
@@ -73,20 +47,7 @@ public:
 			double xBotRight, double yBotRight);
 
 
-	void drawPoint(double x, double y,
-			unsigned char r,
-			unsigned char g,
-			unsigned char b);
-	void drawPoint(double x, double y,
-		struct Color c);
-	
-	/* 
-		Saves to PPM image
-	*/
-	bool saveImage(const char* name);
-
-	iterator begin();
-	iterator end();
+	void drawPoint(double x, double y, size_t val);
 };
 #endif
 
