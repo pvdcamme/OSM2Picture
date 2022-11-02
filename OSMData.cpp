@@ -1,6 +1,7 @@
 #include <osmium/io/pbf_input.hpp>
-#include <osmium/handler.hpp>
+#include <osmium/osm.hpp>
 #include <osmium/visitor.hpp>
+
 #include <cstdint>
 
 #include "OSMData.h"
@@ -55,7 +56,7 @@ size_t OSMData::nodeCount()
 {
   CountHandler totalCount;
   for(auto fileName: mFileNames) {
-    osmium::io::Reader reader(fileName);
+    osmium::io::Reader reader(fileName );
     osmium::apply(reader, totalCount);
   }
 	return totalCount.counted;
