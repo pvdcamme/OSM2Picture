@@ -7,8 +7,6 @@
 #include "OSMData.h"
 
 
-
-
 /** Collects all nodes for later usage.
  */
 struct CountHandler: public osmium::handler::Handler {
@@ -44,7 +42,7 @@ struct CollectHandler: public osmium::handler::Handler {
 bool OSMData::addPbfStream(std::string& file_name)
 {
   mFileNames.push_back(file_name);
-  osmium::io::Reader reader(file_name);
+  osmium::io::Reader reader(file_name, osmium::osm_entity_bits::node, osmium::io::read_meta::no);
 
   CollectHandler handler;
   osmium::apply(reader, handler);
@@ -56,7 +54,7 @@ size_t OSMData::nodeCount()
 {
   CountHandler totalCount;
   for(auto fileName: mFileNames) {
-    osmium::io::Reader reader(fileName );
+    osmium::io::Reader reader(fileName, osmium::osm_entity_bits::node, osmium::io::read_meta::no);
     osmium::apply(reader, totalCount);
   }
 	return totalCount.counted;
