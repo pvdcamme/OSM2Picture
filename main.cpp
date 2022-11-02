@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <vector>
+#include "ImageMap.h"
 
 using std::vector;
 
@@ -40,6 +41,24 @@ struct CountHandler: public osmium::handler::Handler {
   }
 };
 
+/**
+ */
+struct ImageHandler: public osmium::handler::Handler {
+  ImageMap map;
+
+  ImageHandler(): map(1024,1024) {
+  }
+
+  void node(const osmium::Node& n) {
+    auto location = n.location();
+    auto lat = location.lat();
+    auto lon = location.lon();
+    map.addPoint(lat, lon, 1);
+  }
+};
+
+
+
 
 /* Start with a simple XML reader
 
@@ -51,11 +70,10 @@ int priv_file_to_raster(char* file_name)
 {
     std::string name(file_name);
 
-    CountHandler collector;
+    ImageHandler mapper;
     osmium::io::Reader reader(file_name, osmium::osm_entity_bits::node, osmium::io::read_meta::no);
-    osmium::apply(reader, collector);
+    osmium::apply(reader, mapper);
 
-    cout << "Read " << collector.counted << " nodes" << endl;
     return 1;
 
 }
