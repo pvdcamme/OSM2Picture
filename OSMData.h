@@ -25,9 +25,9 @@ public:
 
 private:
 	vector<struct Node> mNodes;
+  vector<std::string> mFileNames;
 
 public:
-	OSMData();
 
 	bool addPbfStream(std::string& fileName);
 

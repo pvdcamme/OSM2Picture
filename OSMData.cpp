@@ -7,9 +7,19 @@
 
 
 
-OSMData::OSMData()
-{
-}
+
+/** Collects all nodes for later usage.
+ */
+struct CountHandler: public osmium::handler::Handler {
+  size_t counted;
+  
+  CountHandler(): counted(0) 
+  {}
+
+  void node(const osmium::Node& n) {
+    ++counted;
+  }
+};
 
 
 /** Collects all nodes for later usage.
@@ -27,12 +37,12 @@ struct CollectHandler: public osmium::handler::Handler {
     saved.longitude = lon;
     nodes.push_back(saved);
   }
-  
 };
 
 
 bool OSMData::addPbfStream(std::string& file_name)
 {
+  mFileNames.push_back(file_name);
   osmium::io::Reader reader(file_name);
 
   CollectHandler handler;
@@ -43,7 +53,12 @@ bool OSMData::addPbfStream(std::string& file_name)
 
 size_t OSMData::nodeCount()
 {
-	return mNodes.size();
+  CountHandler totalCount;
+  for(auto fileName: mFileNames) {
+    osmium::io::Reader reader(fileName);
+    osmium::apply(reader, totalCount);
+  }
+	return totalCount.counted;
 }
 
 struct OSMData::Node& OSMData::getNode(size_t position)
