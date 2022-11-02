@@ -79,7 +79,7 @@ int priv_file_to_raster(char* file_name)
 }
 
 extern "C" { 
-int file_to_raster(char* file_name)
+int file_to_raster(char* file_name, size_t* result, size_t size)
 {
     return priv_file_to_raster(file_name);
     /*
