@@ -18,7 +18,7 @@ using std::endl;
 
 
 
-/** Collects all nodes for later usage.
+/** Counts all nodes, mostly for reporting and testing.
  */
 struct CountHandler: public osmium::handler::Handler {
   size_t counted;
