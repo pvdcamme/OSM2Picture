@@ -53,7 +53,7 @@ void ImageMap::setArea(double xTopLeft, double yTopLeft,
 }
 
 
-void ImageMap::drawPoint(double x, double y, size_t val)
+void ImageMap::addPoint(double x, double y, size_t val)
 {
 	size_t scaledX = size_t(rescale(mXScale, mXOffset, x));
 	size_t scaledY = size_t(rescale(mYScale, mYOffset, y));

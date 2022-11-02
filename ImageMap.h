@@ -47,7 +47,7 @@ public:
 			double xBotRight, double yBotRight);
 
 
-	void drawPoint(double x, double y, size_t val);
+	void addPoint(double x, double y, size_t val);
 };
 #endif
 
