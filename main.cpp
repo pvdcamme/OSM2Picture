@@ -18,29 +18,22 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 
-int main(int argc, char** argv)
+int priv_file_to_raster(char* file_name) 
 {
-    std::string name;
-
-    if(argc == 2) //PBF-file argument
-    {
-        name = argv[1];
-    } else
-    {
-        cerr << "Wrong usage" << endl;
-        cerr << "expected: ";
-        cerr << argv[0] << " ";
-        cerr << "<PBF file>" <<endl;
-        return -1;
-    }
-
+    std::string name(file_name);
     OSMData data;
     data.addPbfStream(name);
 
     cout << "Read " << data.nodeCount() << " nodes" << endl;
-    size_t ncount = data.nodeCount();
-    double minLat(180), maxLat(-180);
-    double minLon(360), maxLon(-1);
+    return 1;
+
+}
+
+extern "C" { 
+int file_to_raster(char* file_name)
+{
+    return priv_file_to_raster(file_name);
+    /*
     for(size_t ctr(0); ctr < ncount; ctr++)
     {
         struct OSMData::Node& n = data.getNode(ctr);
@@ -65,5 +58,6 @@ int main(int argc, char** argv)
     img.saveImage(resultName);
     cout << "Wrote results to " << resultName << endl;
 
-    return true;
+    */
+}
 }
