@@ -48,6 +48,8 @@ public:
 
 
 	void addPoint(double x, double y, size_t val);
+  size_t getPoint(size_t x, size_t y);
 };
+
 #endif
 

@@ -67,5 +67,9 @@ void ImageMap::addPoint(double x, double y, size_t val)
 	mPixels[offset] += val;
 }
 
+size_t ImageMap::getPoint(size_t x, size_t y) {
+  return mPixels[x + mHeight * y];
+}
+
 
 

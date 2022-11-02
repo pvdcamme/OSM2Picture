@@ -46,7 +46,7 @@ struct CountHandler: public osmium::handler::Handler {
 struct ImageHandler: public osmium::handler::Handler {
   ImageMap map;
 
-  ImageHandler(): map(1024,1024) {
+  ImageHandler(size_t width, size_t height): map(width, height) {
   }
 
   void node(const osmium::Node& n) {
@@ -66,13 +66,19 @@ struct ImageHandler: public osmium::handler::Handler {
   usage: ./<argv[0]> PBF-file
 
 */
-int priv_file_to_raster(char* file_name) 
+int priv_file_to_raster(char* file_name, size_t* result, size_t size) 
 {
     std::string name(file_name);
 
-    ImageHandler mapper;
+    ImageHandler mapper(size, size);
     osmium::io::Reader reader(file_name, osmium::osm_entity_bits::node, osmium::io::read_meta::no);
     osmium::apply(reader, mapper);
+    for(size_t w(0); w < size; ++w) {
+      for(size_t h(0); h < size; ++h) {
+        result[w + h * size] = mapper.map.getPoint(w,h);
+      }
+    }
+
 
     return 1;
 
@@ -81,7 +87,7 @@ int priv_file_to_raster(char* file_name)
 extern "C" { 
 int file_to_raster(char* file_name, size_t* result, size_t size)
 {
-    return priv_file_to_raster(file_name);
+    return priv_file_to_raster(file_name, result, size);
     /*
     for(size_t ctr(0); ctr < ncount; ctr++)
     {
