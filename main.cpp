@@ -1,9 +1,44 @@
 #include <iostream>
-
 #include <algorithm>
 
-#include "OSMData.h"
-#include "ImageMap.h"
+
+#include <osmium/io/pbf_input.hpp>
+#include <osmium/osm.hpp>
+#include <osmium/visitor.hpp>
+
+#include <cstdint>
+#include <vector>
+
+using std::vector;
+
+
+using std::cerr;
+using std::cout;
+using std::endl;
+
+
+
+/** Collects all nodes for later usage.
+ */
+struct CountHandler: public osmium::handler::Handler {
+  size_t counted;
+
+  CountHandler(): counted(0) {}
+
+  void node(const osmium::Node& n) {
+    counted++;
+    /*
+    auto location = n.location();
+    auto lat = location.lat();
+    auto lon = location.lon();
+    struct OSMData::Node saved;
+    saved.id = n.id();
+    saved.lattitude = lat;
+    saved.longitude = lon;
+    nodes.push_back(saved);
+    */
+  }
+};
 
 
 /* Start with a simple XML reader
@@ -12,19 +47,15 @@
   usage: ./<argv[0]> PBF-file
 
 */
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ifstream;
-
 int priv_file_to_raster(char* file_name) 
 {
     std::string name(file_name);
-    OSMData data;
-    data.addPbfStream(name);
 
-    cout << "Read " << data.nodeCount() << " nodes" << endl;
+    CountHandler collector;
+    osmium::io::Reader reader(file_name, osmium::osm_entity_bits::node, osmium::io::read_meta::no);
+    osmium::apply(reader, collector);
+
+    cout << "Read " << collector.counted << " nodes" << endl;
     return 1;
 
 }
