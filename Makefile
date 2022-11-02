@@ -1,5 +1,5 @@
 EXEC=OSM2Picture.so
-OBJ=main.o ImageMap.o OSMData.o
+OBJ=main.o ImageMap.o 
 # For LibOsmium
 LIB= -lpthread -lz 
 CPPFLAGS= -Wall -g -O3 -fPIC
