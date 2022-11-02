@@ -22,6 +22,15 @@ public:
 		double lattitude;
 		double longitude;
 	};
+  class Iter{
+    private:
+      bool atEnd;
+      Iter(OSMData&);
+
+    public:
+      struct Node& operator*();
+      Iter& operator++();
+  };
 
 private:
 	vector<struct Node> mNodes;
@@ -32,7 +41,10 @@ public:
 	bool addPbfStream(std::string& fileName);
 
 	size_t nodeCount();
+
 	struct Node& getNode(size_t position);
+
+
 };
 
 #endif
