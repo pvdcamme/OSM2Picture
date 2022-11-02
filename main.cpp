@@ -76,11 +76,8 @@ int priv_file_to_raster(char* file_name, size_t* result, size_t size)
     osmium::apply(reader, mapper);
     for(size_t w(0); w < size; ++w) {
       for(size_t h(0); h < size; ++h) {
-
-        cout << mapper.map.getPoint(w,h) << " ";
         result[w + h * size] = mapper.map.getPoint(w,h);
       }
-      cout << endl;
     }
 
 
