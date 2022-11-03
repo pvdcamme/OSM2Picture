@@ -1,3 +1,10 @@
+"""
+  This renders an Openstreetmap PBF file to JPG.
+  Currently selects a bounding box that approximates belgium.
+
+  Usage: python3 render.py <Openstreetmap PBF file>
+  
+"""
 import ctypes
 import sys
 import os
