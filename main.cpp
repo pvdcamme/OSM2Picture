@@ -28,20 +28,10 @@ struct CountHandler: public osmium::handler::Handler {
 
   void node(const osmium::Node& n) {
     counted++;
-    /*
-    auto location = n.location();
-    auto lat = location.lat();
-    auto lon = location.lon();
-    struct OSMData::Node saved;
-    saved.id = n.id();
-    saved.lattitude = lat;
-    saved.longitude = lon;
-    nodes.push_back(saved);
-    */
   }
 };
 
-/**
+/** Collects Positions onto a raster.
  */
 struct ImageHandler: public osmium::handler::Handler {
   ImageMap map;
@@ -59,14 +49,6 @@ struct ImageHandler: public osmium::handler::Handler {
 };
 
 
-
-
-/* Start with a simple XML reader
-
-
-  usage: ./<argv[0]> PBF-file
-
-*/
 int priv_file_to_raster(char* file_name, size_t* result, size_t size) 
 {
     std::string name(file_name);
@@ -89,31 +71,5 @@ extern "C" {
 int file_to_raster(char* file_name, size_t* result, size_t size)
 {
     return priv_file_to_raster(file_name, result, size);
-    /*
-    for(size_t ctr(0); ctr < ncount; ctr++)
-    {
-        struct OSMData::Node& n = data.getNode(ctr);
-        minLat = std::min(n.lattitude, minLat);
-        maxLat = std::max(n.lattitude, maxLat);
-        minLon = std::min(n.longitude, minLon);
-        maxLon = std::max(n.longitude, maxLon);
-    }
-
-    ImageMap img(1024,1024);
-    img.setArea(2.208, 51.649, 6.652, 49.293);
-    ImageMap::iterator it = img.begin();
-
-    for(size_t ctr(0); ctr < ncount; ctr++)
-    {
-        struct OSMData::Node& n = data.getNode(ctr);
-        img.drawPoint(n.longitude, n.lattitude,
-                      0, 0, 255);
-    }
-
-    auto resultName = "test.ppm";
-    img.saveImage(resultName);
-    cout << "Wrote results to " << resultName << endl;
-
-    */
 }
 }
