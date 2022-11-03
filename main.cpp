@@ -62,14 +62,16 @@ int priv_file_to_raster(char* file_name, size_t* result, size_t size)
       }
     }
 
-
     return 1;
-
 }
 
+
+// For use with Python
 extern "C" { 
 int file_to_raster(char* file_name, size_t* result, size_t size)
 {
     return priv_file_to_raster(file_name, result, size);
+}
+void visit_tags(char* file_name, char* key, char* selected, bool (*callback)(char*)){
 }
 }

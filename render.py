@@ -13,6 +13,18 @@ import numpy
 import colorsys
 
 
+def print_cities(file_name):
+    lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
+
+    @ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_char_p)
+    def print_city(b_name):
+      print(b_name)
+    
+    
+    lib.visit_tags(file_name.encode("ascii"), "city".encode("ascii"), "name".encode("ascii"), print_city)
+
+
+
 def build_image(file_name):
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
 
@@ -36,4 +48,5 @@ def build_image(file_name):
 
 
 if __name__ == "__main__":
+    print_cities(sys.argv[1])
     build_image(sys.argv[1])
