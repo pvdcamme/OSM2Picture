@@ -80,6 +80,13 @@ struct TagHandler: public osmium::handler::Handler {
         
 
     void node(const osmium::Node& n) {
+      const char* searched_val = n.get_value_by_key(selected);
+      if(nullptr != searched_val && strcmp(expected_val, searched_val) == 0) {
+        callback(node_ctr, "Found", "hooray");
+        node_ctr++;
+        
+      }
+      
     }
 };
 
