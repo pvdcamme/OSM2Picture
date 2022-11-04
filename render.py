@@ -16,8 +16,8 @@ import colorsys
 def print_cities(file_name):
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
 
-    @ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_char_p)
-    def print_city(b_name):
+    @ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
+    def print_city(idx, tag_name, tag_val):
       print(b_name)
     
     
