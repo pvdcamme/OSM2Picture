@@ -17,6 +17,15 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+extern "C" {
+
+  typedef bool (*Callback)(size_t, const char*, const char*);
+  struct TagFilter {
+    const char* tag;
+    const char* expected;
+    Callback processor;
+  };
+}
 
 
 /** Counts all nodes, mostly for reporting and testing.
@@ -106,5 +115,8 @@ extern "C" {
     }
     void visit_tags(char* file_name, char* key, char* expected_val, bool (*callback)(size_t, const char*, const char*)) {
         priv_visit_tags(file_name, key, expected_val, callback);
+    }
+
+    void filter_tags(char* file_name, struct TagFilter* filters, size_t* filter_cnt) {
     }
 }
