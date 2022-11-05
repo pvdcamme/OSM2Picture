@@ -92,22 +92,27 @@ struct MultiTagHandler: public osmium::handler::Handler {
         auto& current = filters[filter_ctr];
 
         if( matches_node(n, current)) {
-          Callback callback = current.processor;
-          for (auto& tag: n.tags()){
-            callback(node_ctr, tag.key(), tag.value());
-          }
+          notify_filter(n, current);
         }
       }
     }
 
 private:
-    bool matches_node(const osmium::Node& n, TagFilter& filter){
+    bool matches_node(const osmium::Node& n, TagFilter& filter) const{
         const char* tag = filter.tag;
         const char* expected_val = filter.expected;
 
         const char* searched_val = n.get_value_by_key(tag);
         return nullptr != searched_val && strcmp(expected_val, searched_val) == 0;
     }
+
+    void notify_filter(const osmium::Node& n, TagFilter& filter) {
+          Callback callback = filter.processor;
+          for (auto& tag: n.tags()){
+            callback(node_ctr, tag.key(), tag.value());
+          }
+    }
+
 };
 
 
