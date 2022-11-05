@@ -69,7 +69,6 @@ def build_image(file_name):
     np_array = numpy.array(result).reshape((1024, 1024))
     max_val = numpy.max(np_array)
     result_image = Image.new("RGB", (1024, 1024))
-    print(f"Maxval : {max_val}")
 
     for w in range(1024):
         for h in range(1024):
@@ -82,5 +81,5 @@ def build_image(file_name):
 
 
 if __name__ == "__main__":
-    #print_cities(sys.argv[1])
+    print_cities(sys.argv[1])
     build_image(sys.argv[1])
