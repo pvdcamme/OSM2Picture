@@ -20,7 +20,8 @@ def print_cities(file_name):
 
     @ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
     def print_city(idx, tag_name, tag_val):
-      print(f"{tag_name} = {tag_val.decode('utf-8')}")
+      print(f"{idx} :: {tag_name} = {tag_val.decode('utf-8')}")
+      return True
 
     class TagFilter(ctypes.Structure):
         _fields_ = [("tag", ctypes.c_char_p),
@@ -32,16 +33,16 @@ def print_cities(file_name):
     ## Explicit, to ensure vals are not GC-ed
     place_cstr = "place".encode("ascii")
     city_cstr = "city".encode("ascii")
-    town_cstr = "tonwcity".encode("ascii")
-    village_cstr = "city".encode("ascii")
-    filter_many[0] = TagFilter(tag=place_val, expected= city_val, callback=print_city)
-    filter_many[1] = TagFilter(tag=place_val, expected= town_cstr, callback=print_city)
-    filter_many[2] = TagFilter(tag=place_val, expected= village_cstr, callback=print_city)
+    town_cstr = "tonw".encode("ascii")
+    village_cstr = "village".encode("ascii")
+    filter_many[0] = TagFilter(tag=place_cstr, expected= city_cstr, callback=print_city)
+    filter_many[1] = TagFilter(tag=place_cstr, expected= town_cstr, callback=print_city)
+    filter_many[2] = TagFilter(tag=place_cstr, expected= village_cstr, callback=print_city)
 
       
-    lib.visit_tags(file_name.encode("ascii"), "place".encode("ascii"), "city".encode("ascii"), print_city)
-    lib.visit_tags(file_name.encode("ascii"), "place".encode("ascii"), "town".encode("ascii"), print_city)
-    lib.visit_tags(file_name.encode("ascii"), "place".encode("ascii"), "village".encode("ascii"), print_city)
+    lib.filter_tags(file_name.encode("ascii"), filter_many, len(filter_many))
+
+
 
 
 
