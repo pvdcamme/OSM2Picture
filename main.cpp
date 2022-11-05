@@ -25,6 +25,15 @@ extern "C" {
     const char* expected;
     Callback processor;
   };
+
+  struct NodeRaster {
+    size_t* result;
+    size_t raster_width;
+    double min_lat;
+    double min_lon;
+    double max_lat;
+    double max_lon;
+  };
 }
 
 
@@ -47,6 +56,10 @@ struct ImageHandler: public osmium::handler::Handler {
 
     ImageHandler(size_t width, size_t height): map(width, height) {
         map.setArea(2.208, 51.649, 6.652, 49.293);
+    }
+
+    void setArea(double min_longitude, double min_latitude, double max_longitude, double max_latitude){
+      map.setArea(min_longitude, max_latitude, max_longitude, min_latitude);
     }
 
     void node(const osmium::Node& n) {
@@ -72,6 +85,27 @@ int priv_file_to_raster(char* file_name, size_t* result, size_t size)
     }
 
     return 1;
+}
+
+int priv_file_to_raster2(char* file_name, struct NodeRaster raster) {
+    std::string name(file_name);
+
+    size_t size =raster.raster_width;
+
+    ImageHandler mapper(size, size);
+    mapper.setArea(raster.min_lon, raster.min_lat, raster.max_lon, raster.max_lat);
+    osmium::io::Reader reader(file_name, osmium::osm_entity_bits::node, osmium::io::read_meta::no);
+    osmium::apply(reader, mapper);
+
+    for(size_t w(0); w < size; ++w) {
+        for(size_t h(0); h < size; ++h) {
+            raster.result[w + h * size] = mapper.map.getPoint(w,h);
+        }
+    }
+
+
+
+  return 1;
 }
 
 struct MultiTagHandler: public osmium::handler::Handler {
@@ -128,6 +162,10 @@ extern "C" {
     int file_to_raster(char* file_name, size_t* result, size_t size)
     {
         return priv_file_to_raster(file_name, result, size);
+    }
+
+    int file_to_raster2(char* file_name, struct NodeRaster raster) {
+      return priv_file_to_raster2(file_name, raster);
     }
 
     void filter_tags(char* file_name, struct TagFilter* filters, size_t filter_cnt) {

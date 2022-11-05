@@ -39,7 +39,6 @@ def print_cities(file_name):
     filter_many[1] = TagFilter(tag=place_cstr, expected= town_cstr, callback=print_city)
     filter_many[2] = TagFilter(tag=place_cstr, expected= village_cstr, callback=print_city)
 
-      
     lib.filter_tags(file_name.encode("ascii"), filter_many, len(filter_many))
 
 
@@ -51,14 +50,26 @@ def print_cities(file_name):
 def build_image(file_name):
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
 
+    class NodeRaster(ctypes.Structure):
+        _fields_ = [("result", ctypes.POINTER(ctypes.c_size_t)),
+                    ("raster_width", ctypes.c_size_t),
+                    ("min_lat", ctypes.c_double),
+                    ("min_lon", ctypes.c_double),
+                    ("max_lat", ctypes.c_double),
+                    ("max_lon", ctypes.c_double),
+                    ]
+
     image_type = ctypes.c_size_t * (1024 * 1024)
     result = image_type()
+    
+    toFill = NodeRaster(result=result, raster_width=1024, min_lat=49.293, min_lon=2.208, max_lat = 51.649, max_lon =6.6)
 
-    lib.file_to_raster(file_name.encode("ascii"), result, 1024)
+    lib.file_to_raster2(file_name.encode("ascii"), toFill) 
 
     np_array = numpy.array(result).reshape((1024, 1024))
     max_val = numpy.max(np_array)
     result_image = Image.new("RGB", (1024, 1024))
+    print(f"Maxval : {max_val}")
 
     for w in range(1024):
         for h in range(1024):
@@ -71,5 +82,5 @@ def build_image(file_name):
 
 
 if __name__ == "__main__":
-    print_cities(sys.argv[1])
+    #print_cities(sys.argv[1])
     build_image(sys.argv[1])
