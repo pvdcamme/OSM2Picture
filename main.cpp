@@ -74,39 +74,6 @@ int priv_file_to_raster(char* file_name, size_t* result, size_t size)
     return 1;
 }
 
-struct TagHandler: public osmium::handler::Handler {
-    char* selected;
-    char* expected_val;
-    bool (*callback)(size_t, const char*, const char*);
-    size_t node_ctr;
-
-    TagHandler(char* _selected, char* _expected_val, bool (*_callback) (size_t, const char*, const char*)):
-      selected(_selected),
-      expected_val(_expected_val),
-      callback(_callback),
-      node_ctr(0)
-    {}
-        
-
-    void node(const osmium::Node& n) {
-      const char* searched_val = n.get_value_by_key(selected);
-      if(nullptr != searched_val && strcmp(expected_val, searched_val) == 0) {
-        
-        for (auto& tag: n.tags()){
-          callback(node_ctr, tag.key(), tag.value());
-        }
-        node_ctr++;
-      }
-    }
-};
-
-void priv_visit_tags(char* file_name, char* key, char* expected_val, bool (*callback)(size_t, const char*, const char*)) {
-
-    osmium::io::Reader reader(file_name, osmium::osm_entity_bits::node, osmium::io::read_meta::no);
-    TagHandler tags(key, expected_val, callback);
-    osmium::apply(reader, tags);
-}
-
 struct MultiTagHandler: public osmium::handler::Handler {
     TagFilter* filters;
     size_t filter_cnt;
@@ -151,9 +118,6 @@ extern "C" {
     int file_to_raster(char* file_name, size_t* result, size_t size)
     {
         return priv_file_to_raster(file_name, result, size);
-    }
-    void visit_tags(char* file_name, char* key, char* expected_val, bool (*callback)(size_t, const char*, const char*)) {
-        priv_visit_tags(file_name, key, expected_val, callback);
     }
 
     void filter_tags(char* file_name, struct TagFilter* filters, size_t filter_cnt) {
