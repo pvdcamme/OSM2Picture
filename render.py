@@ -18,10 +18,12 @@ def print_cities(file_name):
 
     @ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
     def print_city(idx, tag_name, tag_val):
-      print(f"{tag_name} = {tag_val}")
+      print(f"{tag_name} = {tag_val.decode('utf-8')}")
     
     
     lib.visit_tags(file_name.encode("ascii"), "place".encode("ascii"), "city".encode("ascii"), print_city)
+    lib.visit_tags(file_name.encode("ascii"), "place".encode("ascii"), "town".encode("ascii"), print_city)
+    lib.visit_tags(file_name.encode("ascii"), "place".encode("ascii"), "village".encode("ascii"), print_city)
 
 
 
