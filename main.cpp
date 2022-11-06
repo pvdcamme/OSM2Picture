@@ -59,7 +59,6 @@ struct ImageHandler: public osmium::handler::Handler {
     }
 
     void setArea(double min_longitude, double min_latitude, double max_longitude, double max_latitude){
-      map.setArea(min_longitude, max_latitude, max_longitude, min_latitude);
       map.setArea(min_longitude, min_latitude, max_longitude, max_latitude);
     }
 
