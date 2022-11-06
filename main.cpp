@@ -19,11 +19,11 @@ using std::endl;
 
 extern "C" {
 
-  typedef bool (*Callback)(size_t, const char*, const char*);
+  typedef bool (*TagCallback)(size_t, const char*, const char*);
   struct TagFilter {
     const char* tag;
     const char* expected;
-    Callback processor;
+    TagCallback processor;
   };
 
   struct NodeRaster {
@@ -139,7 +139,7 @@ private:
     }
 
     void notify_filter(const osmium::Node& n, TagFilter& filter) {
-          Callback callback = filter.processor;
+          TagCallback callback = filter.processor;
           for (auto& tag: n.tags()){
             callback(node_ctr, tag.key(), tag.value());
           }
