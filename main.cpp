@@ -111,17 +111,14 @@ int priv_file_to_raster2(char* file_name, struct NodeRaster raster) {
 struct MultiTagHandler: public osmium::handler::Handler {
     TagFilter* filters;
     size_t filter_cnt;
-    size_t node_ctr;
 
     MultiTagHandler(TagFilter* _filters, size_t _filter_cnt):
       filters(_filters),
-      filter_cnt(_filter_cnt),
-      node_ctr(0)
+      filter_cnt(_filter_cnt)
     {}
 
 
     void node(const osmium::Node& n) {
-      node_ctr++;
       for(size_t filter_ctr(0); filter_ctr < filter_cnt; ++filter_ctr) {
         auto& current = filters[filter_ctr];
 
@@ -147,7 +144,7 @@ private:
     void notify_filter(const osmium::Node& n, TagFilter& filter) {
           TagCallback callback = filter.processor;
           for (auto& tag: n.tags()){
-            callback(node_ctr, tag.key(), tag.value());
+            callback(n.id(), tag.key(), tag.value());
           }
     }
 
