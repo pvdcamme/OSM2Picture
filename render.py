@@ -15,12 +15,16 @@ import colorsys
 
 def print_cities(file_name):
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
-
     callback_type = ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
+
+    cities = {}
 
     @ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
     def print_city(idx, tag_name, tag_val):
-      print(f"{idx} :: {tag_name} = {tag_val.decode('utf-8')}")
+      #print(f"{idx} :: {tag_name} = {tag_val.decode('utf-8')}")
+      if tag_name == "name":
+        cities[idx] = tag_val.decode('utf-8')
+
       return True
 
     class TagFilter(ctypes.Structure):
@@ -28,18 +32,15 @@ def print_cities(file_name):
                     ("expected", ctypes.c_char_p),
                     ("callback", callback_type)]
     
-    filter_many = (TagFilter * 3)()
+    filter_many = (TagFilter * 1)()
 
-    ## Explicit, to ensure vals are not GC-ed
     place_cstr = "place".encode("ascii")
     city_cstr = "city".encode("ascii")
-    town_cstr = "tonw".encode("ascii")
-    village_cstr = "village".encode("ascii")
     filter_many[0] = TagFilter(tag=place_cstr, expected= city_cstr, callback=print_city)
-    filter_many[1] = TagFilter(tag=place_cstr, expected= town_cstr, callback=print_city)
-    filter_many[2] = TagFilter(tag=place_cstr, expected= village_cstr, callback=print_city)
 
     lib.filter_tags(file_name.encode("ascii"), filter_many, len(filter_many))
+
+    return cities
 
 
 
