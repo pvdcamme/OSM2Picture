@@ -8,30 +8,28 @@
 import ctypes
 import sys
 import os
-from PIL import Image
+from PIL import Image, ImageDraw
 import numpy
 import colorsys
 
 
-def print_cities(file_name):
+def collect_cities(file_name):
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
-    tag_callback_type = ctypes.CFUNCTYPE(ctypes.c_bool,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
+    tag_callback_type = ctypes.CFUNCTYPE(None,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
     node_callback_type = ctypes.CFUNCTYPE(None,ctypes.c_size_t, ctypes.c_double, ctypes.c_double)
 
     cities = {}
+    cities_coord = {}
 
     @tag_callback_type
     def print_city(idx, tag_name, tag_val):
-      #print(f"{idx} :: {tag_name} = {tag_val.decode('utf-8')}")
-      if tag_name == "name":
+      if tag_name == b"name":
         cities[idx] = tag_val.decode('utf-8')
-      return True
 
 
     @node_callback_type
     def nodes(idx, lat, lon):
-      pass
-
+      cities_coord[idx] = (lat, lon)
 
     class TagFilter(ctypes.Structure):
         _fields_ = [("tag", ctypes.c_char_p),
@@ -47,9 +45,13 @@ def print_cities(file_name):
 
     lib.filter_tags(file_name.encode("ascii"), filter_many, len(filter_many))
 
-    return cities
+    result = {}
+    for idx in set(cities.keys()).intersection(cities_coord.keys()):
+      name = cities[idx]
+      location = cities_coord[idx]
+      result[name] = location
 
-
+    return result 
 
 
 def build_image(file_name):
@@ -81,10 +83,19 @@ def build_image(file_name):
             r, g, b = colorsys.hsv_to_rgb(val / max_val, val > 0, 1)
             result_image.putpixel((w, h),
                                   (int(255 * r), int(255 * g), int(255 * b)))
+    draw = ImageDraw.Draw(result_image)
+
+    for name, (lat, lon) in collect_cities(file_name).items():
+      y = 1024 * (lat - toFill.min_lat) / (toFill.max_lat - toFill.min_lat)
+      x = 1024 * (lon - toFill.min_lon) / (toFill.max_lon - toFill.min_lon)
+      print(f"{name} :: lat={lat} - lon={lon} to ({x} - {y})") 
+      image_x, image_y= (int(x), 1024 - int(y))
+      draw.ellipse((image_x -4, image_y-4, image_x +3, image_y +3), fill =(0, 0, 255))
+      draw.text((image_x, image_y), name, fill=(255,255,255))
+      
+    
 
     result_image.save("result.jpg")
 
-
 if __name__ == "__main__":
-    print_cities(sys.argv[1])
     build_image(sys.argv[1])

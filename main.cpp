@@ -19,7 +19,7 @@ using std::endl;
 
 extern "C" {
 
-  typedef bool (*TagCallback)(size_t, const char*, const char*);
+  typedef void (*TagCallback)(size_t, const char*, const char*);
   typedef void (*NodeCallback)(size_t, double, double);
   struct TagFilter {
     const char* tag;
@@ -85,7 +85,6 @@ int priv_file_to_raster(char* file_name, size_t* result, size_t size)
             result[w + h * size] = mapper.map.getPoint(w,h);
         }
     }
-
     return 1;
 }
 
