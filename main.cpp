@@ -123,10 +123,7 @@ struct MultiTagHandler: public osmium::handler::Handler {
         auto& current = filters[filter_ctr];
 
         if( matches_node(n, current)) {
-          auto location = n.location();
-          auto lat = location.lat();
-          auto lon = location.lon();
-          current.nodes(n.id(), lat, lon);
+          notify_node(n, current);
           notify_filter(n, current);
         }
       }
@@ -141,10 +138,18 @@ private:
         return nullptr != searched_val && strcmp(expected_val, searched_val) == 0;
     }
 
+
+    void notify_node(const osmium::Node& n, TagFilter& filter) {
+          auto location = n.location();
+          auto lat = location.lat();
+          auto lon = location.lon();
+          filter.nodes(n.id(), lat, lon);
+    }
     void notify_filter(const osmium::Node& n, TagFilter& filter) {
           TagCallback callback = filter.processor;
+          size_t id = n.id();
           for (auto& tag: n.tags()){
-            callback(n.id(), tag.key(), tag.value());
+            callback(id, tag.key(), tag.value());
           }
     }
 
