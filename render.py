@@ -14,6 +14,10 @@ import colorsys
 
 
 def collect_cities(file_name):
+    """
+      Collects all cities from the file_name (pbf-file).
+      Returns them as a dictionary with name -> coordinates
+    """
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
     tag_callback_type = ctypes.CFUNCTYPE(None,ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p)
     node_callback_type = ctypes.CFUNCTYPE(None,ctypes.c_size_t, ctypes.c_double, ctypes.c_double)
@@ -55,6 +59,9 @@ def collect_cities(file_name):
 
 
 def build_image(file_name):
+    """
+        Builds an image out of the PBF file
+    """
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
 
     class NodeRaster(ctypes.Structure):
@@ -88,7 +95,6 @@ def build_image(file_name):
     for name, (lat, lon) in collect_cities(file_name).items():
       y = 1024 * (lat - toFill.min_lat) / (toFill.max_lat - toFill.min_lat)
       x = 1024 * (lon - toFill.min_lon) / (toFill.max_lon - toFill.min_lon)
-      print(f"{name} :: lat={lat} - lon={lon} to ({x} - {y})") 
       image_x, image_y= (int(x), 1024 - int(y))
       draw.ellipse((image_x -4, image_y-4, image_x +3, image_y +3), fill =(0, 0, 255))
       draw.text((image_x, image_y), name, fill=(255,255,255))
