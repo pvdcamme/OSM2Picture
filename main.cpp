@@ -60,6 +60,7 @@ struct ImageHandler: public osmium::handler::Handler {
 
     void setArea(double min_longitude, double min_latitude, double max_longitude, double max_latitude){
       map.setArea(min_longitude, max_latitude, max_longitude, min_latitude);
+      map.setArea(min_longitude, min_latitude, max_longitude, max_latitude);
     }
 
     void node(const osmium::Node& n) {
@@ -102,8 +103,6 @@ int priv_file_to_raster2(char* file_name, struct NodeRaster raster) {
             raster.result[w + h * size] = mapper.map.getPoint(w,h);
         }
     }
-
-
 
   return 1;
 }
