@@ -20,10 +20,12 @@ using std::endl;
 extern "C" {
 
   typedef bool (*TagCallback)(size_t, const char*, const char*);
+  typedef void (*NodeCallback)(size_t, double, double);
   struct TagFilter {
     const char* tag;
     const char* expected;
     TagCallback processor;
+    NodeCallback nodes;
   };
 
   struct NodeRaster {
@@ -124,6 +126,10 @@ struct MultiTagHandler: public osmium::handler::Handler {
         auto& current = filters[filter_ctr];
 
         if( matches_node(n, current)) {
+          auto location = n.location();
+          auto lat = location.lat();
+          auto lon = location.lon();
+          current.nodes(n.id(), lat, lon);
           notify_filter(n, current);
         }
       }

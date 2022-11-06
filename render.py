@@ -28,16 +28,22 @@ def print_cities(file_name):
       return True
 
 
+    @node_callback_type
+    def nodes(idx, lat, lon):
+      pass
+
+
     class TagFilter(ctypes.Structure):
         _fields_ = [("tag", ctypes.c_char_p),
                     ("expected", ctypes.c_char_p),
-                    ("tag_callback", tag_callback_type)]
+                    ("tag_callback", tag_callback_type),
+                    ("node_callback", node_callback_type)]
     
     filter_many = (TagFilter * 1)()
 
     place_cstr = "place".encode("ascii")
     city_cstr = "city".encode("ascii")
-    filter_many[0] = TagFilter(tag=place_cstr, expected= city_cstr, tag_callback=print_city)
+    filter_many[0] = TagFilter(tag=place_cstr, expected= city_cstr, tag_callback=print_city, node_callback=nodes)
 
     lib.filter_tags(file_name.encode("ascii"), filter_many, len(filter_many))
 
