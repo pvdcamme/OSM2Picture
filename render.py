@@ -95,18 +95,18 @@ def build_image(file_name):
     max_val = numpy.max(np_array)
     result_image = Image.new("RGB", (image_size, image_size))
 
-    for w in range(image_size):
-        for h in range(image_size):
-            val = result[w + h * image_size]
-            r, g, b = colorsys.hsv_to_rgb(val / max_val, val > 0, 1)
-            result_image.putpixel((w, h),
-                                  (int(255 * r), int(255 * g), int(255 * b)))
+    for (x, y), val in numpy.ndenumerate(np_array):
+        r, g, b = colorsys.hsv_to_rgb(val / max_val, val > 0, 1)
+        result_image.putpixel((y, x),
+                              (int(255 * r), int(255 * g), int(255 * b)))
 
     draw = ImageDraw.Draw(result_image)
     font = ImageFont.truetype("DejaVuSans.ttf", size=20)
     for name, (lat, lon) in collect_cities(file_name).items():
-        y = image_size * (lat - toFill.min_lat) / (toFill.max_lat - toFill.min_lat)
-        x = image_size * (lon - toFill.min_lon) / (toFill.max_lon - toFill.min_lon)
+        y = image_size * (lat - toFill.min_lat) / (toFill.max_lat -
+                                                   toFill.min_lat)
+        x = image_size * (lon - toFill.min_lon) / (toFill.max_lon -
+                                                   toFill.min_lon)
         image_x, image_y = (int(x), image_size - int(y))
         text_color = (0, 0, 0)
         draw.ellipse((image_x - 4, image_y - 4, image_x + 3, image_y + 3),
