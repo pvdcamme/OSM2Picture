@@ -8,7 +8,7 @@
 import ctypes
 import sys
 import os
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import numpy
 import colorsys
 
@@ -62,6 +62,7 @@ def build_image(file_name):
     """
         Builds an image out of the PBF file
     """
+
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
 
     class NodeRaster(ctypes.Structure):
@@ -91,13 +92,14 @@ def build_image(file_name):
             result_image.putpixel((w, h),
                                   (int(255 * r), int(255 * g), int(255 * b)))
     draw = ImageDraw.Draw(result_image)
-
+    font = ImageFont.truetype("DejaVuSans.ttf", size=20)
     for name, (lat, lon) in collect_cities(file_name).items():
       y = 1024 * (lat - toFill.min_lat) / (toFill.max_lat - toFill.min_lat)
       x = 1024 * (lon - toFill.min_lon) / (toFill.max_lon - toFill.min_lon)
       image_x, image_y= (int(x), 1024 - int(y))
-      draw.ellipse((image_x -4, image_y-4, image_x +3, image_y +3), fill =(0, 0, 255))
-      draw.text((image_x, image_y), name, fill=(255,255,255))
+      text_color = (0, 0, 0)
+      draw.ellipse((image_x -4, image_y-4, image_x +3, image_y +3), fill=text_color)
+      draw.text((image_x, image_y), name, fill=text_color, font = font)
       
     
 
