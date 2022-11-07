@@ -109,7 +109,7 @@ def build_image(file_name):
                                                    toFill.min_lon)
         image_x, image_y = (int(x), image_size - int(y))
         text_color = (0, 0, 0)
-        draw.ellipse((image_x - 4, image_y - 4, image_x + 3, image_y + 3),
+        draw.ellipse((image_x - 4, image_y - 4, image_x + 4, image_y + 4),
                      fill=text_color)
         draw.text((image_x, image_y), name, fill=text_color, font=font)
 
