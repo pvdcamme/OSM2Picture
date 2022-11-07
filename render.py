@@ -60,14 +60,8 @@ def collect_cities(file_name):
 
     return result
 
-
-def build_image(file_name):
-    """
-        Builds an image out of the PBF file
-    """
-
+def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
-
     class NodeRaster(ctypes.Structure):
         _fields_ = [
             ("result", ctypes.POINTER(ctypes.c_size_t)),
@@ -78,20 +72,32 @@ def build_image(file_name):
             ("max_lon", ctypes.c_double),
         ]
 
-    image_size = 1024
     image_type = ctypes.c_size_t * (image_size * image_size)
     result = image_type()
 
     toFill = NodeRaster(result=result,
                         raster_width=1024,
-                        min_lat=49.293,
-                        min_lon=2.208,
-                        max_lat=51.649,
-                        max_lon=6.6)
+                        min_lat= min_lat,
+                        min_lon= min_lon,
+                        max_lat= max_lat,
+                        max_lon= max_lon)
 
     lib.file_to_raster2(file_name.encode("ascii"), toFill)
+    return numpy.array(result).reshape((image_size, image_size))
 
-    np_array = numpy.array(result).reshape((image_size, image_size))
+
+
+def build_image(file_name, output_name="result.jpg"):
+    """
+        Builds an image out of the PBF file
+    """
+    image_size = 1024
+    min_lat=49.293
+    min_lon=2.208
+    max_lat=51.649
+    max_lon=6.6
+
+    np_array = build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon) 
     max_val = numpy.max(np_array)
     result_image = Image.new("RGB", (image_size, image_size))
 
@@ -103,17 +109,15 @@ def build_image(file_name):
     draw = ImageDraw.Draw(result_image)
     font = ImageFont.truetype("DejaVuSans.ttf", size=20)
     for name, (lat, lon) in collect_cities(file_name).items():
-        y = image_size * (lat - toFill.min_lat) / (toFill.max_lat -
-                                                   toFill.min_lat)
-        x = image_size * (lon - toFill.min_lon) / (toFill.max_lon -
-                                                   toFill.min_lon)
+        y = image_size * (lat - min_lat) / (max_lat - min_lat)
+        x = image_size * (lon - min_lon) / (max_lon - min_lon)
         image_x, image_y = (int(x), image_size - int(y))
         text_color = (0, 0, 0)
         draw.ellipse((image_x - 4, image_y - 4, image_x + 4, image_y + 4),
                      fill=text_color)
         draw.text((image_x, image_y), name, fill=text_color, font=font)
 
-    result_image.save("result.jpg")
+    result_image.save(output_name)
 
 
 if __name__ == "__main__":
