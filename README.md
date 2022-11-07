@@ -19,10 +19,9 @@ Building and running:
 $ make
 $ python render.py <...pbf> 
 ```
+The result is written to result.jpg.
 
-Openstreet map files can be found at [Planet osm](https://wiki.openstreetmap.org/wiki/Planet.osm)
+Openstreet map files can be found at [Planet osm](https://wiki.openstreetmap.org/wiki/Planet.osm). These files are processed
+at about ~20 MByte/s. On larger files it can thus take a significant amount of time to process it all.
 
-The result is written to test.ppm. Converting these files to a more common image format can be 
-done with conver (from ImageMagick).
 
-The XML files are processed at about 30 MBytes/s but since these files are huge, it can take a long time for the whole XML to be processed.
