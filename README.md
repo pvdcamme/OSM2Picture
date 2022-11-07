@@ -1,18 +1,23 @@
 OSM2Picture
 ===========
 
-Small utitlity to convert an OSM XML file to an PPM image.
-Data can be read in from either an XML file or stdin.
+Small utitlity to convert an OSM (PBF) file to a JPEG image.
+
+This tools uses Python for rendering. Most of the openstreet map data
+is parsed in C++ using libOSMIUM for performance reasons.
+
+Currently select a raster that envelops Belgium. This is configured in
+the python code.
 
 Requirements:
-* libexpat-dev: for XML processing
+* libosmium: for OpenStreetMap processing
 
 ![Resulting image (Nov 2022)](result/latest.jpg)
 
 Building and running:
 ```
 $ make
-$ bzcat belgium-latest.osm.bz2 |./OSM2Picture
+$ python render.py <...pbf> 
 ```
 
 Openstreet map files can be found at [Planet osm](https://wiki.openstreetmap.org/wiki/Planet.osm)
