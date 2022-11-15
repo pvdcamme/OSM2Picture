@@ -61,6 +61,12 @@ def collect_cities(file_name):
     return result
 
 def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
+    """
+      Builds a 2D raster out of the PBF in <file_name>
+      The corners of this raster are selected from the subesquent args.
+
+      Each elements has the number of nodes whithin a the part of the raster.
+    """
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
     class NodeRaster(ctypes.Structure):
         _fields_ = [
@@ -89,7 +95,8 @@ def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
 
 def build_image(file_name, output_name="result.jpg"):
     """
-        Builds an image out of the PBF file
+        Builds an image out of the PBF file and saves it to the
+        output_name.
     """
     image_size = 1024
     min_lat=49.293
