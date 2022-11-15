@@ -93,6 +93,11 @@ def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
 
 
 def draw_cities(file_name, draw_image, mapper_fun):
+    """
+      Draws the (large) cities in the PBF file (file_name0 onto 
+      the draw_image structure;
+      The mapper_fun is used to (lat, lon) -> x ,y in the image.
+    """
     font = ImageFont.truetype("DejaVuSans.ttf", size=20)
     text_color = (0, 0, 0)
     for name, (lat, lon) in collect_cities(file_name).items():
