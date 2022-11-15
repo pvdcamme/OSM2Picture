@@ -60,6 +60,7 @@ def collect_cities(file_name):
 
     return result
 
+
 def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
     """
       Builds a 2D raster out of the PBF in <file_name>
@@ -68,6 +69,7 @@ def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
       Each elements has the number of nodes whithin a the part of the raster.
     """
     lib = ctypes.cdll.LoadLibrary(os.path.abspath("OSM2Picture.so"))
+
     class NodeRaster(ctypes.Structure):
         _fields_ = [
             ("result", ctypes.POINTER(ctypes.c_size_t)),
@@ -83,10 +85,10 @@ def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
 
     toFill = NodeRaster(result=result,
                         raster_width=1024,
-                        min_lat= min_lat,
-                        min_lon= min_lon,
-                        max_lat= max_lat,
-                        max_lon= max_lon)
+                        min_lat=min_lat,
+                        min_lon=min_lon,
+                        max_lat=max_lat,
+                        max_lon=max_lon)
 
     lib.file_to_raster2(file_name.encode("ascii"), toFill)
     return numpy.array(result).reshape((image_size, image_size))
@@ -102,11 +104,10 @@ def draw_cities(file_name, draw_image, mapper_fun):
     text_color = (0, 0, 0)
     for name, (lat, lon) in collect_cities(file_name).items():
         image_x, image_y = mapper_fun(lat, lon)
-        draw_image.ellipse((image_x - 4, image_y - 4, image_x + 4, image_y + 4),
-                     fill=text_color)
+        draw_image.ellipse(
+            (image_x - 4, image_y - 4, image_x + 4, image_y + 4),
+            fill=text_color)
         draw_image.text((image_x, image_y), name, fill=text_color, font=font)
-
-
 
 
 def build_image(file_name, output_name="result.jpg"):
@@ -115,12 +116,13 @@ def build_image(file_name, output_name="result.jpg"):
         output_name.
     """
     image_size = 1024
-    min_lat=49.293
-    min_lon=2.208
-    max_lat=51.649
-    max_lon=6.6
+    min_lat = 49.293
+    min_lon = 2.208
+    max_lat = 51.649
+    max_lon = 6.6
 
-    np_array = build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon) 
+    np_array = build_raster(file_name, image_size, min_lat, min_lon, max_lat,
+                            max_lon)
     max_val = numpy.max(np_array)
     result_image = Image.new("RGB", (image_size, image_size))
 
@@ -128,6 +130,7 @@ def build_image(file_name, output_name="result.jpg"):
         r, g, b = colorsys.hsv_to_rgb(val / max_val, val > 0, 1)
         result_image.putpixel((y, x),
                               (int(255 * r), int(255 * g), int(255 * b)))
+
     def map_to_image(lat, lon):
         y = image_size * (lat - min_lat) / (max_lat - min_lat)
         x = image_size * (lon - min_lon) / (max_lon - min_lon)
