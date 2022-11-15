@@ -84,7 +84,7 @@ def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
     result = image_type()
 
     toFill = NodeRaster(result=result,
-                        raster_width=1024,
+                        raster_width=image_size,
                         min_lat=min_lat,
                         min_lon=min_lon,
                         max_lat=max_lat,
