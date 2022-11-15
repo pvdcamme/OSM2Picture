@@ -92,6 +92,17 @@ def build_raster(file_name, image_size, min_lat, min_lon, max_lat, max_lon):
     return numpy.array(result).reshape((image_size, image_size))
 
 
+def draw_cities(file_name, draw_image, mapper_fun):
+    font = ImageFont.truetype("DejaVuSans.ttf", size=20)
+    text_color = (0, 0, 0)
+    for name, (lat, lon) in collect_cities(file_name).items():
+        image_x, image_y = mapper_fun(lat, lon)
+        draw_image.ellipse((image_x - 4, image_y - 4, image_x + 4, image_y + 4),
+                     fill=text_color)
+        draw_image.text((image_x, image_y), name, fill=text_color, font=font)
+
+
+
 
 def build_image(file_name, output_name="result.jpg"):
     """
@@ -112,18 +123,14 @@ def build_image(file_name, output_name="result.jpg"):
         r, g, b = colorsys.hsv_to_rgb(val / max_val, val > 0, 1)
         result_image.putpixel((y, x),
                               (int(255 * r), int(255 * g), int(255 * b)))
-
-    draw = ImageDraw.Draw(result_image)
-    font = ImageFont.truetype("DejaVuSans.ttf", size=20)
-    text_color = (0, 0, 0)
-    for name, (lat, lon) in collect_cities(file_name).items():
+    def map_to_image(lat, lon):
         y = image_size * (lat - min_lat) / (max_lat - min_lat)
         x = image_size * (lon - min_lon) / (max_lon - min_lon)
         image_x, image_y = (int(x), image_size - int(y))
-        draw.ellipse((image_x - 4, image_y - 4, image_x + 4, image_y + 4),
-                     fill=text_color)
-        draw.text((image_x, image_y), name, fill=text_color, font=font)
+        return (image_x, image_y)
 
+    draw = ImageDraw.Draw(result_image)
+    draw_cities(file_name, draw, map_to_image)
     result_image.save(output_name)
 
 
