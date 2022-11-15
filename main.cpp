@@ -1,3 +1,10 @@
+/** Helper functions to speedup processing OpenstreetMap files 
+    with Python.
+
+    The actual Openstreet work is delegated to osmium.
+
+    Much information is fed back to Python using C-callbacks.
+ */
 #include <iostream>
 #include <algorithm>
 
