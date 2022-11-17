@@ -1,7 +1,7 @@
 OSM2Picture
 ===========
 
-Small utitlity to convert an OSM (PBF) file to a JPEG image.
+Small utitlity to convert an OSM (PBF) file to a JPEG image. Each pixel represents the density of Openstreet map data.
 
 This tools uses Python for rendering. Most of the openstreet map data
 is parsed in C++ using libOSMIUM for performance reasons.
